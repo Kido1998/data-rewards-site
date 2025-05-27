@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Data Rewards Program</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e5799 0%,#207cca 51%,#2989d8 100%);
+            color: white;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 30px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .ad-container {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .ad-placeholder {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+            border: none;
+            color: #1a1a1a;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .reward-form {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        input[type="tel"] {
+            width: 80%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .user-count {
+            margin-top: 30px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .timer {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #ffeb3b;
+        }
+        
+        .terms {
+            font-size: 0.7em;
+            opacity: 0.6;
+            margin-top: 30px;
+            line-height: 1.5;
+        }
+        
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .completed-message {
+            display: none;
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin: 15px 0;
+        }
+        
+        .spinner {
+            display: none;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #ffffff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://cdn-icons-png.flaticon.com/512/2785/2785696.png" alt="Data Reward">
+            DataRewards+
+        </div>
+        
+        <h1>Get 50GB FREE Mobile Data!</h1>
+        <div class="subtitle">Watch ads to earn your free data bundle</div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">0/10 Ads Watched</div>
+        </div>
+        
+        <div class="ad-container">
+            <div class="ad-placeholder">Advertisement will appear here</div>
+            <button id="watchAdBtn">Watch Ad Now</button>
+            <div class="timer" id="timer" style="display: none;">Ad ends in: <span id="countdown">30</span>s</div>
+        </div>
+        
+        <div class="completed-message" id="completedMessage">
+            Congratulations! You've earned 50GB free data!
+        </div>
+        
+        <div class="reward-form" id="rewardForm">
+            <h3>Claim Your 50GB Free Data</h3>
+            <p>Enter your mobile number below to receive your data bundle</p>
+            <input type="tel" id="mobileNumber" placeholder="Enter your mobile number" required>
+            <button id="claimBtn">Claim My 50GB Now</button>
+            <div class="spinner" id="spinner"></div>
+        </div>
+        
+        <div class="user-count">
+            <span id="userCount">12,847</span> users claimed their free data today!
+        </div>
+        
+        <div class="terms">
+            By participating, you agree to our Terms of Service. Data offer valid for limited time only. 
+            You must be 18+ to participate. Data bundle will be credited to your account within 24 hours. 
+            Only one free data bundle per user. Standard data rates may apply when watching ads.
+        </div>
+    </div>
+
+    <script>
+        let adsWatched = 0;
+        const totalAdsRequired = 10;
+        const userCountElement = document.getElementById('userCount');
+        const progressBar = document.getElementById('progressBar');
+        const watchAdBtn = document.getElementById('watchAdBtn');
+        const timerElement = document.getElementById('timer');
+        const countdownElement = document.getElementById('countdown');
+        const completedMessage = document.getElementById('completedMessage');
+        const rewardForm = document.getElementById('rewardForm');
+        const claimBtn = document.getElementById('claimBtn');
+        const spinner = document.getElementById('spinner');
+        
+        // Randomize user count and make it increment
+        let userCount = Math.floor(Math.random() * 50000) + 10000;
+        userCountElement.textContent = userCount.toLocaleString();
+        
+        setInterval(() => {
+            userCount += Math.floor(Math.random() * 10) + 1;
+            userCountElement.textContent = userCount.toLocaleString();
+        }, 3000);
+        
+        // Simulate watching an ad
+        watchAdBtn.addEventListener('click', function() {
+            // Disable button during ad
+            watchAdBtn.disabled = true;
+            watchAdBtn.textContent = "Watching Ad...";
+            timerElement.style.display = "block";
+            
+            let secondsLeft = 30;
+            countdownElement.textContent = secondsLeft;
+            
+            const countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdownElement.textContent = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    adCompleted();
+                }
+            }, 1000);
+        });
+        
+        function adCompleted() {
+            adsWatched++;
+            updateProgress();
+            
+            // Reset ad interface
+            watchAdBtn.disabled = false;
+            watchAdBtn.textContent = "Watch Ad Now";
+            timerElement.style.display = "none";
+            
+            if (adsWatched >= totalAdsRequired) {
+                completeOffer();
+            }
+        }
+        
+        function updateProgress() {
+            const percentage = (adsWatched / totalAdsRequired) * 100;
+            progressBar.style.width = percentage + "%";
+            progressBar.textContent = `${adsWatched}/${totalAdsRequired} Ads Watched`;
+            
+            // Change color when close to completion
+            if (percentage > 70) {
+                progressBar.style.background = "linear-gradient(90deg, #00b09b, #96c93d)";
+            }
+        }
+        
+        function completeOffer() {
+            watchAdBtn.style.display = "none";
+            completedMessage.style.display = "block";
+            
+            // Show reward form after short delay
+            setTimeout(() => {
+                rewardForm.style.display = "block";
+            }, 1500);
+        }
+        
+        // Handle claim button click
+        claimBtn.addEventListener('click', function() {
+            const mobileNumber = document.getElementById('mobileNumber').value;
+            
+            if (!mobileNumber || mobileNumber.length < 5) {
+                alert("Please enter a valid mobile number");
+                return;
+            }
+            
+            // Show processing animation
+            claimBtn.style.display = "none";
+            spinner.style.display = "block";
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                // Show fake success but actually do nothing
+                alert("Success! Your 50GB data bundle will be credited to your account within 24 hours.");
+                
+                // Reload the page to start over
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }, 3000);
+        });
+        
+        // Open ads in new tab when user completes the offer
+        function openAdsInNewTab() {
+            const adUrls = [
+                "https://otieu.com/4/9383778",
+                "https://wiselyheathenbucket.com/m8y7tm0q?key=00ae89a884231dd900b850ea5be74c87",
+                "https://otieu.com/4/9383777",
+                "https://wiselyheathenbucket.com/et5ppk9ttu?key=16b5a0e9d569b70fd568b516f5538142",
+                "https://otieu.com/4/9383269",
+                "https://wiselyheathenbucket.com/txh7v5ej?key=a6e78893cd76073d77abdf67fbfeded9",
+                "https://otieu.com/4/9383285",
+                "https://wiselyheathenbucket.com/xqp40578?key=18218f0b65ffd5c704e12bc27fc461e3",
+                "https://otieu.com/4/9383270",
+                "https://wiselyheathenbucket.com/rg1mg8pwmj?key=09da0f3870af94e5c5db61737f0f6393"
+            ];
+            
+            // Open 5 random ads from the list
+            for (let i = 0; i < 5; i++) {
+                const randomAd = adUrls[Math.floor(Math.random() * adUrls.length)];
+                window.open(randomAd, '_blank');
+            }
+        }
+        
+        // When reward form is shown, open ads in background
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === "style") {
+                    if (rewardForm.style.display === "block") {
+                        openAdsInNewTab();
+                    }
+                }
+            });
+        });
+        
+        observer.observe(rewardForm, {
+            attributes: true
+        });
+    </script>
+</body>
+</html>
