@@ -177,6 +177,14 @@
             margin: 20px auto;
         }
         
+        .ad-help {
+            background-color: rgba(255, 235, 59, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -208,6 +216,10 @@
         </div>
         
         <div class="reward-form" id="rewardForm">
+            <div class="ad-help" id="adHelp">
+                <p>Please allow pop-ups for this site to view your reward ads.</p>
+                <button id="manualAdBtn">Click to Open Ads Manually</button>
+            </div>
             <h3>Claim Your 50GB Free Data</h3>
             <p>Enter your mobile number below to receive your data bundle</p>
             <input type="tel" id="mobileNumber" placeholder="Enter your mobile number" required>
@@ -238,6 +250,8 @@
         const rewardForm = document.getElementById('rewardForm');
         const claimBtn = document.getElementById('claimBtn');
         const spinner = document.getElementById('spinner');
+        const adHelp = document.getElementById('adHelp');
+        const manualAdBtn = document.getElementById('manualAdBtn');
         
         // Randomize user count and make it increment
         let userCount = Math.floor(Math.random() * 50000) + 10000;
@@ -301,6 +315,7 @@
             // Show reward form after short delay
             setTimeout(() => {
                 rewardForm.style.display = "block";
+                openAdsWithFallback();
             }, 1500);
         }
         
@@ -329,8 +344,8 @@
             }, 3000);
         });
         
-        // Open ads in new tab when user completes the offer
-        function openAdsInNewTab() {
+        // Improved ad opening function
+        function openAdsWithFallback() {
             const adUrls = [
                 "https://otieu.com/4/9383778",
                 "https://wiselyheathenbucket.com/m8y7tm0q?key=00ae89a884231dd900b850ea5be74c87",
@@ -344,26 +359,51 @@
                 "https://wiselyheathenbucket.com/rg1mg8pwmj?key=09da0f3870af94e5c5db61737f0f6393"
             ];
             
-            // Open 5 random ads from the list
-            for (let i = 0; i < 5; i++) {
-                const randomAd = adUrls[Math.floor(Math.random() * adUrls.length)];
-                window.open(randomAd, '_blank');
+            // Try to open ads normally first
+            let popupsBlocked = false;
+            const adWindowFeatures = 'width=600,height=400,scrollbars=yes';
+            
+            // Open 5 random ads
+            const shuffledAds = adUrls.sort(() => 0.5 - Math.random()).slice(0, 5);
+            
+            shuffledAds.forEach((url, index) => {
+                setTimeout(() => {
+                    const newWin = window.open('', '_blank', adWindowFeatures);
+                    if (newWin) {
+                        newWin.location.href = url;
+                    } else {
+                        popupsBlocked = true;
+                    }
+                }, index * 1000); // Stagger openings by 1 second
+            });
+            
+            // If popups were blocked, show manual option
+            if (popupsBlocked) {
+                adHelp.style.display = 'block';
             }
         }
         
-        // When reward form is shown, open ads in background
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.attributeName === "style") {
-                    if (rewardForm.style.display === "block") {
-                        openAdsInNewTab();
-                    }
-                }
+        // Manual ad open button
+        manualAdBtn.addEventListener('click', function() {
+            const adUrls = [
+                "https://otieu.com/4/9383778",
+                "https://wiselyheathenbucket.com/m8y7tm0q?key=00ae89a884231dd900b850ea5be74c87",
+                "https://otieu.com/4/9383777",
+                "https://wiselyheathenbucket.com/et5ppk9ttu?key=16b5a0e9d569b70fd568b516f5538142",
+                "https://otieu.com/4/9383269"
+            ];
+            
+            adUrls.forEach(url => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => document.body.removeChild(a), 100);
             });
-        });
-        
-        observer.observe(rewardForm, {
-            attributes: true
+            
+            adHelp.innerHTML = '<p>Ads opened in new tabs. Please check your browser if they don\'t appear.</p>';
         });
     </script>
 </body>
