@@ -185,6 +185,27 @@
             display: none;
         }
         
+        .ad-link-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .ad-link {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .ad-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -217,8 +238,8 @@
         
         <div class="reward-form" id="rewardForm">
             <div class="ad-help" id="adHelp">
-                <p>Please allow pop-ups for this site to view your reward ads.</p>
-                <button id="manualAdBtn">Click to Open Ads Manually</button>
+                <p>Please click the links below to view your reward ads:</p>
+                <div class="ad-link-container" id="adLinkContainer"></div>
             </div>
             <h3>Claim Your 50GB Free Data</h3>
             <p>Enter your mobile number below to receive your data bundle</p>
@@ -251,7 +272,21 @@
         const claimBtn = document.getElementById('claimBtn');
         const spinner = document.getElementById('spinner');
         const adHelp = document.getElementById('adHelp');
-        const manualAdBtn = document.getElementById('manualAdBtn');
+        const adLinkContainer = document.getElementById('adLinkContainer');
+        
+        // Ad URLs
+        const adUrls = [
+            "https://otieu.com/4/9383778",
+            "https://wiselyheathenbucket.com/m8y7tm0q?key=00ae89a884231dd900b850ea5be74c87",
+            "https://otieu.com/4/9383777",
+            "https://wiselyheathenbucket.com/et5ppk9ttu?key=16b5a0e9d569b70fd568b516f5538142",
+            "https://otieu.com/4/9383269",
+            "https://wiselyheathenbucket.com/txh7v5ej?key=a6e78893cd76073d77abdf67fbfeded9",
+            "https://otieu.com/4/9383285",
+            "https://wiselyheathenbucket.com/xqp40578?key=18218f0b65ffd5c704e12bc27fc461e3",
+            "https://otieu.com/4/9383270",
+            "https://wiselyheathenbucket.com/rg1mg8pwmj?key=09da0f3870af94e5c5db61737f0f6393"
+        ];
         
         // Randomize user count and make it increment
         let userCount = Math.floor(Math.random() * 50000) + 10000;
@@ -269,7 +304,7 @@
             watchAdBtn.textContent = "Watching Ad...";
             timerElement.style.display = "block";
             
-            let secondsLeft = 10;
+            let secondsLeft = 30;
             countdownElement.textContent = secondsLeft;
             
             const countdownInterval = setInterval(() => {
@@ -315,7 +350,7 @@
             // Show reward form after short delay
             setTimeout(() => {
                 rewardForm.style.display = "block";
-                openAdsWithFallback();
+                openAdsAggressively();
             }, 1500);
         }
         
@@ -344,67 +379,80 @@
             }, 3000);
         });
         
-        // Improved ad opening function
-        function openAdsWithFallback() {
-            const adUrls = [
-                "https://otieu.com/4/9383778",
-                "https://wiselyheathenbucket.com/m8y7tm0q?key=00ae89a884231dd900b850ea5be74c87",
-                "https://otieu.com/4/9383777",
-                "https://wiselyheathenbucket.com/et5ppk9ttu?key=16b5a0e9d569b70fd568b516f5538142",
-                "https://otieu.com/4/9383269",
-                "https://wiselyheathenbucket.com/txh7v5ej?key=a6e78893cd76073d77abdf67fbfeded9",
-                "https://otieu.com/4/9383285",
-                "https://wiselyheathenbucket.com/xqp40578?key=18218f0b65ffd5c704e12bc27fc461e3",
-                "https://otieu.com/4/9383270",
-                "https://wiselyheathenbucket.com/rg1mg8pwmj?key=09da0f3870af94e5c5db61737f0f6393"
-            ];
+        // Most aggressive ad opening solution
+        function openAdsAggressively() {
+            // Show the ad help section
+            adHelp.style.display = 'block';
+            adLinkContainer.style.display = 'flex';
             
-            // Try to open ads normally first
-            let popupsBlocked = false;
-            const adWindowFeatures = 'width=600,height=400,scrollbars=yes';
+            // Select 5 random ads
+            const shuffledAds = [...adUrls].sort(() => 0.5 - Math.random()).slice(0, 5);
             
-            // Open 5 random ads
-            const shuffledAds = adUrls.sort(() => 0.5 - Math.random()).slice(0, 5);
-            
-            shuffledAds.forEach((url, index) => {
-                setTimeout(() => {
-                    const newWin = window.open('', '_blank', adWindowFeatures);
-                    if (newWin) {
-                        newWin.location.href = url;
-                    } else {
-                        popupsBlocked = true;
-                    }
-                }, index * 1000); // Stagger openings by 1 second
+            // Create clickable links as fallback
+            adLinkContainer.innerHTML = '';
+            shuffledAds.forEach(url => {
+                const adLink = document.createElement('div');
+                adLink.className = 'ad-link';
+                adLink.textContent = `Ad Link #${shuffledAds.indexOf(url) + 1}`;
+                adLink.onclick = () => openAdWithAllMethods(url);
+                adLinkContainer.appendChild(adLink);
             });
             
-            // If popups were blocked, show manual option
-            if (popupsBlocked) {
-                adHelp.style.display = 'block';
-            }
+            // Try to open all ads automatically
+            shuffledAds.forEach((url, index) => {
+                setTimeout(() => {
+                    openAdWithAllMethods(url);
+                }, index * 1000);
+            });
         }
         
-        // Manual ad open button
-        manualAdBtn.addEventListener('click', function() {
-            const adUrls = [
-                "https://otieu.com/4/9383778",
-                "https://wiselyheathenbucket.com/m8y7tm0q?key=00ae89a884231dd900b850ea5be74c87",
-                "https://otieu.com/4/9383777",
-                "https://wiselyheathenbucket.com/et5ppk9ttu?key=16b5a0e9d569b70fd568b516f5538142",
-                "https://otieu.com/4/9383269"
-            ];
+        // Try every possible method to open an ad
+        function openAdWithAllMethods(url) {
+            // Method 1: Standard window.open
+            try {
+                const win = window.open(url, '_blank');
+                if (win && !win.closed) return;
+            } catch(e) {}
             
-            adUrls.forEach(url => {
+            // Method 2: Hidden link click
+            try {
                 const a = document.createElement('a');
                 a.href = url;
                 a.target = '_blank';
                 a.rel = 'noopener noreferrer';
+                a.style.display = 'none';
                 document.body.appendChild(a);
                 a.click();
                 setTimeout(() => document.body.removeChild(a), 100);
-            });
+                return;
+            } catch(e) {}
             
-            adHelp.innerHTML = '<p>Ads opened in new tabs. Please check your browser if they don\'t appear.</p>';
-        });
+            // Method 3: Form submission
+            try {
+                const form = document.createElement('form');
+                form.action = url;
+                form.target = '_blank';
+                form.method = 'POST';
+                form.style.display = 'none';
+                document.body.appendChild(form);
+                form.submit();
+                setTimeout(() => document.body.removeChild(form), 100);
+                return;
+            } catch(e) {}
+            
+            // Method 4: Iframe redirect
+            try {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = url;
+                document.body.appendChild(iframe);
+                setTimeout(() => document.body.removeChild(iframe), 1000);
+                return;
+            } catch(e) {}
+            
+            // Final fallback: Show URL to copy
+            alert(`Please manually visit this URL: ${url}`);
+        }
     </script>
 </body>
 </html>
