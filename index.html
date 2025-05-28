@@ -223,13 +223,13 @@
         <div class="subtitle">Watch ads to earn your free data bundle</div>
         
         <div class="progress-container">
-            <div class="progress-bar" id="progressBar">0/10 Ads Watched</div>
+            <div class="progress-bar" id="progressBar">0/8 Ads Watched</div>
         </div>
         
         <div class="ad-container">
             <div class="ad-placeholder">Advertisement will appear here</div>
             <button id="watchAdBtn">Watch Ad Now</button>
-            <div class="timer" id="timer" style="display: none;">Ad ends in: <span id="countdown">30</span>s</div>
+            <div class="timer" id="timer" style="display: none;">Ad ends in: <span id="countdown">10</span>s</div>
         </div>
         
         <div class="completed-message" id="completedMessage">
@@ -261,7 +261,7 @@
 
     <script>
         let adsWatched = 0;
-        const totalAdsRequired = 10;
+        const totalAdsRequired = 8; // Changed from 10 to 8
         const userCountElement = document.getElementById('userCount');
         const progressBar = document.getElementById('progressBar');
         const watchAdBtn = document.getElementById('watchAdBtn');
@@ -274,18 +274,16 @@
         const adHelp = document.getElementById('adHelp');
         const adLinkContainer = document.getElementById('adLinkContainer');
         
-        // Ad URLs
+        // Updated ad URLs
         const adUrls = [
-            "https://otieu.com/4/9383778",
-            "https://wiselyheathenbucket.com/m8y7tm0q?key=00ae89a884231dd900b850ea5be74c87",
-            "https://otieu.com/4/9383777",
-            "https://wiselyheathenbucket.com/et5ppk9ttu?key=16b5a0e9d569b70fd568b516f5538142",
-            "https://otieu.com/4/9383269",
-            "https://wiselyheathenbucket.com/txh7v5ej?key=a6e78893cd76073d77abdf67fbfeded9",
-            "https://otieu.com/4/9383285",
-            "https://wiselyheathenbucket.com/xqp40578?key=18218f0b65ffd5c704e12bc27fc461e3",
-            "https://otieu.com/4/9383270",
-            "https://wiselyheathenbucket.com/rg1mg8pwmj?key=09da0f3870af94e5c5db61737f0f6393"
+            "https://lc.cx/_nYpo9",
+            "https://lc.cx/y3qgHt",
+            "https://lc.cx/koDmWC",
+            "https://lc.cx/F-Gozv",
+            "https://lc.cx/ugybZ1",
+            "https://surl.li/gvwiuc",
+            "https://surl.lu/ndvrug",
+            "https://surl.lu/ohqwnc"
         ];
         
         // Randomize user count and make it increment
@@ -304,7 +302,7 @@
             watchAdBtn.textContent = "Watching Ad...";
             timerElement.style.display = "block";
             
-            let secondsLeft = 30;
+            let secondsLeft = 10; // Changed from 30 to 10
             countdownElement.textContent = secondsLeft;
             
             const countdownInterval = setInterval(() => {
@@ -385,8 +383,8 @@
             adHelp.style.display = 'block';
             adLinkContainer.style.display = 'flex';
             
-            // Select 5 random ads
-            const shuffledAds = [...adUrls].sort(() => 0.5 - Math.random()).slice(0, 5);
+            // Use all 8 ads (since you have 8 links)
+            const shuffledAds = [...adUrls]; // Use all ads now
             
             // Create clickable links as fallback
             adLinkContainer.innerHTML = '';
